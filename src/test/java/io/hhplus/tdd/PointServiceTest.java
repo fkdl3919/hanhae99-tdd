@@ -78,5 +78,31 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * PATCH  /point/{id}/charge : 포인트를 충전한다.
+     * 예외상항 설정
+     * - 포인트 충전 시 입력한 amount가 유효한 범위내의 값이 아닌 경우 ( 0 < point >= 1000 )
+     */
+    @Test
+    @DisplayName("포인트 충전 시 입력한 amount가 유효한 범위내의 값이 아닌 경우")
+    public void pointChargeTest3(){
+        // given
+        final long id = 1L;
+        final long amount = 1001L;
+
+        // stub
+        // 주어진 id로 유저를 검색 했을 때 원하는 유저를 반환
+        when(userPointTable.selectById(id)).thenReturn(UserPoint.empty(id));
+
+        // when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.charge(id, amount);
+        });
+
+        // then
+        assertEquals("포인트는 0 초과 1000 이하 범위 내로 입력해 주세요.", exception.getMessage());
+        verify(userPointTable, times(1)).selectById(id);
+
+    }
 
 }
