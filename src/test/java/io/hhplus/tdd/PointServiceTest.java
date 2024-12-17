@@ -1,10 +1,10 @@
 package io.hhplus.tdd;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.UserPoint;
-import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,11 +36,15 @@ public class PointServiceTest {
         // 주어진 id로 유저를 검색 했을 때 해당 유저가 존재하지 않음
         when(userPointTable.selectById(id)).thenReturn(null);
 
-        // when then
-        // when 과 then 단계를 한번에 진행하여 검증
-        assertThatThrownBy(() -> pointService.charge(id, amount))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("해당 유저가 존재하지 않습니다.");
+        // when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+           pointService.charge(id, amount);
+        });
+
+        // then
+        assertEquals("입력한 유저가 존재하지 않습니다.", exception.getMessage());
+        verify(userPointTable, times(1)).selectById(id);
+
     }
 
 }
