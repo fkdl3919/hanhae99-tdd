@@ -46,6 +46,38 @@ public class PointServiceIntegrationTest {
         // then
         assertEquals(returnUser.point(), point + addAmount);
 
+        // 조회한 유저와 충전 후 유저의 포인트가 같은지 검증
+        UserPoint selectUser = userPointTable.selectById(id);
+        assertEquals(selectUser.point(), returnUser.point());
+        assertEquals(selectUser.id(), returnUser.id());
+
     }
+
+    @Test
+    @DisplayName("포인트 사용 통합 테스트")
+    public void pointUseIntegrationTest(){
+        // given
+        final long id = 1L;
+        final long point = 500L;
+
+        // 사용할 포인트
+        final long useAmount = 100L;
+
+        // id 가 1이고 기존 point가 500인 유저를 입력
+        userPointTable.insertOrUpdate(id, point);
+
+        // when
+        UserPoint returnUser = pointService.use(id, useAmount);
+
+        // then
+        assertEquals(returnUser.point(), point - useAmount);
+
+        // 조회한 유저와 사용 후 유저의 포인트가 같은지 검증
+        UserPoint selectUser = userPointTable.selectById(id);
+        assertEquals(selectUser.point(), returnUser.point());
+        assertEquals(selectUser.id(), returnUser.id());
+
+    }
+
 
 }
