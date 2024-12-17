@@ -225,6 +225,35 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * PATCH /point/{id}/use : 포인트를 사용한다.
+     * 예외상항 설정
+     * - 포인트 사용 시 입력한 amount보다 조회된 user의 point잔고가 부족할 경우
+     */
+    @Test
+    @DisplayName("포인트 사용 시 입력한 amount보다 조회된 user의 point잔고가 부족할 경우")
+    public void pointUseTest4(){
+        // given
+        final long id = 1L;
+        final long point = 100L;
+        final long amount = 200L;
+
+        // stub
+        // 주어진 id로 유저를 검색 했을 때 원하는 유저를 반환
+        when(userPointTable.selectById(id)).thenReturn(new UserPoint(id, point, System.currentTimeMillis()));
+
+        // when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.use(id, amount);
+        });
+
+        // then
+        assertEquals("사용하려는 포인트가 보유한 포인트를 초과하였습니다.", exception.getMessage());
+        verify(userPointTable, times(1)).selectById(id);
+
+    }
+
+
 
 
 }
