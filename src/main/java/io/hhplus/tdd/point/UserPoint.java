@@ -24,6 +24,14 @@ public record UserPoint(
 
     }
 
+    // 사용할 amount 에 대한 valid 행위를 UserPoint 객체 내에 팩토리 메소드로 정의
+    public void validUsePoint(long amount) {
+        // 입력한 amount 보다 보유한 point 가 작을 경우
+        if(amount > this.point){
+            throw new IllegalArgumentException("사용하려는 포인트가 보유한 포인트를 초과하였습니다.");
+        }
+    }
+
     public UserPoint addPoint (long amount) {
         return new UserPoint(this.id, this.point + amount, System.currentTimeMillis());
     }

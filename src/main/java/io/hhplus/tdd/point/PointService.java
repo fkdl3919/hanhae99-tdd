@@ -40,6 +40,9 @@ public class PointService {
         // 입력받은 amount에 대해 검증
         userPoint.validAmount(amount);
 
+        // 입력받은 amount에 대한 보유 point 검증
+        userPoint.validUsePoint(amount);
+
         return null;
     }
 
