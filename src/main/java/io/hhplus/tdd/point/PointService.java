@@ -37,6 +37,9 @@ public class PointService {
             throw new IllegalArgumentException("입력한 유저가 존재하지 않습니다.");
         }
 
+        // 입력받은 amount에 대해 검증
+        userPoint.validAmount(amount);
+
         return null;
     }
 
