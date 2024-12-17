@@ -3,6 +3,7 @@ package io.hhplus.tdd;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.PointService;
 import io.hhplus.tdd.point.UserPoint;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -17,16 +18,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class PointServiceTest {
 
     @InjectMocks
-    private PointService pointService;
+    private PointService pointService; // 테스트 대상
 
     @Mock
-    private UserPointTable userPointTable;
+    private UserPointTable userPointTable; // 테스트 대상의 의존성을 해결하기 위해, 예상된 결과를 반환하기 위하여 user table을 mock 으로 설정함
 
     /**
      * PATCH  /point/{id}/charge : 포인트를 충전한다.
+     * 예외상항 설정
+     * - 포인트 충전 시 입력한 id의 사용자가 존재하지 않는 경우
      */
     @Test
-    @DisplayName("포인트_충전_시_입력한_id의_사용자가_존재하지_않는_경우")
+    @DisplayName("포인트 충전 시 입력한 id의 사용자가 존재하지 않는 경우")
     public void pointChargeTest1(){
         // given
         final long id = 1L;
