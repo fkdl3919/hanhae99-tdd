@@ -43,7 +43,10 @@ public class PointService {
         // 입력받은 amount에 대한 보유 point 검증
         userPoint.validUsePoint(amount);
 
-        return null;
+        // 입력받은 amount 조회된 user에게 입력
+        UserPoint updatedUser = userPoint.usePoint(amount);
+
+        return userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point());
     }
 
 
