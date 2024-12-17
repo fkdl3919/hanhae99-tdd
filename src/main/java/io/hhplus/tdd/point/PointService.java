@@ -24,6 +24,12 @@ public class PointService {
             throw new IllegalArgumentException("포인트가 입력되지 않았습니다.");
         }
 
+        // 입력한 amount가 유효한 범위내의 값이 아닌 경우 ( 0 < point <= 1000 )
+        if(0 >= amount || amount > 1000) {
+            throw new IllegalArgumentException("포인트는 0 초과 1000 이하 범위 내로 입력해 주세요.");
+        }
+
+
         return null;
     }
 

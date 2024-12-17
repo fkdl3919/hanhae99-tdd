@@ -81,7 +81,7 @@ public class PointServiceTest {
     /**
      * PATCH  /point/{id}/charge : 포인트를 충전한다.
      * 예외상항 설정
-     * - 포인트 충전 시 입력한 amount가 유효한 범위내의 값이 아닌 경우 ( 0 < point >= 1000 )
+     * - 포인트 충전 시 입력한 amount가 유효한 범위내의 값이 아닌 경우 ( 0 < point <= 1000 )
      */
     @Test
     @DisplayName("포인트 충전 시 입력한 amount가 유효한 범위내의 값이 아닌 경우")
