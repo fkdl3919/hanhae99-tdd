@@ -292,6 +292,31 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * GET /point/{id} : 포인트를 조회한다.
+     * 예외상항 설정
+     * - 포인트 조회 시 입력한 id의 사용자가 존재하지 않는 경우
+     */
+    @Test
+    @DisplayName("포인트 조회 시 입력한 id의 사용자가 존재하지 않는 경우")
+    public void pointSelectTest1(){
+        // given
+        final long id = 1L;
+
+        // stub
+        // 주어진 id로 유저를 검색 했을 때 해당 유저가 존재하지 않음
+        when(userPointTable.selectById(id)).thenReturn(null);
+
+        // when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.selectPoint(id);
+        });
+
+        // then
+        assertEquals("입력한 유저가 존재하지 않습니다.", exception.getMessage());
+        verify(userPointTable, times(1)).selectById(id);
+
+    }
 
 
 }
