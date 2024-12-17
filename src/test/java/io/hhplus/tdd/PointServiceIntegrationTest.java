@@ -79,5 +79,25 @@ public class PointServiceIntegrationTest {
 
     }
 
+    @Test
+    @DisplayName("포인트 조회 통합 테스트")
+    public void pointSelectIntegrationTest(){
+        // given
+        final long id = 1L;
+        final long point = 500L;
+
+        // id 가 1이고 기존 point가 500인 유저를 입력
+        userPointTable.insertOrUpdate(id, point);
+
+        // when
+        UserPoint returnUser = pointService.selectPoint(id);
+
+        // then
+        // 조회한 유저에 대한 검증
+        assertEquals(returnUser.point(), point);
+        assertEquals(returnUser.id(), id);
+
+    }
+
 
 }
