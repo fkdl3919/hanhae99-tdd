@@ -253,6 +253,44 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * PATCH /point/{id}/use : 포인트를 사용한다.
+     *
+     */
+    @Test
+    @DisplayName("포인트 사용 성공 테스트")
+    public void pointUseTest5(){
+        // given
+        final long id = 1L;
+        final long point = 500L;
+
+        final long useAmount = 100L;
+
+        // 조회 된 유저 정의
+        UserPoint selectUser = new UserPoint(id, point, System.currentTimeMillis());
+
+        // stub
+        // 주어진 id로 조회 된 유저를 반환
+        when(userPointTable.selectById(id)).thenReturn(selectUser);
+
+        // 업데이트 된 유저 정의 ( 조회된 유저의 포인트 사용이 완료 된 )
+        UserPoint updatedUser = new UserPoint(selectUser.id(), selectUser.point() - useAmount, System.currentTimeMillis());
+
+        // stub
+        // 업데이트 된 유저 반환
+        when(userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point())).thenReturn(updatedUser);
+
+        // when
+        UserPoint returnUser = pointService.use(id, useAmount);
+
+        // then
+        // stub 으로 설정한 A와 B의 id, point 값이 같은 지 확인
+        assertEquals(returnUser.id(), updatedUser.id());
+        assertEquals(returnUser.point(), updatedUser.point());
+        verify(userPointTable, times(1)).selectById(id);
+        verify(userPointTable, times(1)).insertOrUpdate(updatedUser.id(), updatedUser.point());
+
+    }
 
 
 
