@@ -22,7 +22,10 @@ public class PointService {
         // 입력받은 amount에 대해 검증
         userPoint.validAmount(amount);
 
-        return null;
+        // 입력받은 amount 조회된 user에게 입력
+        UserPoint updatedUser = userPoint.addPoint(amount);
+
+        return userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point());
     }
 
 }

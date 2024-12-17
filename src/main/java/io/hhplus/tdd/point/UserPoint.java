@@ -24,4 +24,8 @@ public record UserPoint(
 
     }
 
+    public UserPoint addPoint (long amount) {
+        return new UserPoint(this.id, this.point + amount, System.currentTimeMillis());
+    }
+
 }
