@@ -50,4 +50,33 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * PATCH  /point/{id}/charge : 포인트를 충전한다.
+     * 예외상항 설정
+     * - 포인트 충전 시 입력한 amount가 0 또는 입력되지 않았을 경우
+     * - 포인트 기본값은 0 으로 설정
+     */
+    @Test
+    @DisplayName("포인트 충전 시 입력한 amount 가 0 또는 입력되지 않았을 경우")
+    public void pointChargeTest2(){
+        // given
+        final long id = 1L;
+        final long amount = 0L;
+
+        // stub
+        // 주어진 id로 유저를 검색 했을 때 원하는 유저를 반환
+        when(userPointTable.selectById(id)).thenReturn(UserPoint.empty(id));
+
+        // when
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            pointService.charge(id, amount);
+        });
+
+        // then
+        assertEquals("포인트가 입력되지 않았습니다.", exception.getMessage());
+        verify(userPointTable, times(1)).selectById(id);
+
+    }
+
+
 }
