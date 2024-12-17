@@ -19,6 +19,11 @@ public class PointService {
             throw new IllegalArgumentException("입력한 유저가 존재하지 않습니다.");
         }
 
+        // 입력한 point가 0 일 경우
+        if(amount == 0) {
+            throw new IllegalArgumentException("포인트가 입력되지 않았습니다.");
+        }
+
         return null;
     }
 
