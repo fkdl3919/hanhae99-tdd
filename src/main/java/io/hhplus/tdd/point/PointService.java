@@ -58,7 +58,7 @@ public class PointService {
             throw new IllegalArgumentException("입력한 유저가 존재하지 않습니다.");
         }
 
-        return null;
+        return userPoint;
     }
 
 
