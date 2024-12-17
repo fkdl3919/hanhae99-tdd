@@ -318,5 +318,35 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * GET /point/{id} : 포인트를 조회한다.
+     *
+     */
+    @Test
+    @DisplayName("포인트 조회 성공 테스트")
+    public void pointSelectTest2(){
+        // given
+        final long id = 1L;
+        final long point = 500L;
+
+        // 조회 된 유저 정의
+        UserPoint selectUser = new UserPoint(id, point, System.currentTimeMillis());
+
+        // stub
+        // 주어진 id로 조회 된 유저를 반환
+        when(userPointTable.selectById(id)).thenReturn(selectUser);
+
+        // when
+        UserPoint returnUser = pointService.selectPoint(id);
+
+        // then
+        // stub 으로 설정한 A와 B의 id, point 값이 같은 지 확인
+        assertEquals(returnUser.id(), selectUser.id());
+        assertEquals(returnUser.point(), selectUser.point());
+        verify(userPointTable, times(1)).selectById(id);
+
+    }
+
+
 
 }
