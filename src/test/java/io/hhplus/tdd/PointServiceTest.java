@@ -391,6 +391,7 @@ public class PointServiceTest {
     public void pointSelectHistoriesTest2(){
         // given
         final long id = 1L;
+        final long point = 500L;
 
         // 반환할 포인트 내역을 미리 정의
         // id 1 인 유저 2개의 내역
@@ -398,6 +399,13 @@ public class PointServiceTest {
             new PointHistory(1, id, 100, TransactionType.CHARGE, System.currentTimeMillis()),
             new PointHistory(2, id, 100, TransactionType.USE, System.currentTimeMillis())
         );
+
+        // 조회 된 유저 정의
+        UserPoint selectUser = new UserPoint(id, point, System.currentTimeMillis());
+
+        // stub
+        // 주어진 id로 조회 된 유저를 반환
+        when(userPointTable.selectById(id)).thenReturn(selectUser);
 
         // stub
         // 주어진 id로 조회 된 포인트 내역을 반환

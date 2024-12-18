@@ -1,5 +1,6 @@
 package io.hhplus.tdd.point;
 
+import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 public class PointService {
 
     private final UserPointTable  userPointTable;
+    private final PointHistoryTable pointHistoryTable;
 
     public UserPoint charge(long id, long amount){
 
@@ -71,7 +73,7 @@ public class PointService {
             throw new IllegalArgumentException("입력한 유저가 존재하지 않습니다.");
         }
 
-        return null;
+        return pointHistoryTable.selectAllByUserId(userPoint.id());
     }
 
 
