@@ -4,8 +4,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.PointService;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -378,5 +382,37 @@ public class PointServiceTest {
 
     }
 
+    /**
+     * GET /point/{id}/histories : 포인트 내역을 조회한다.
+     *
+     */
+    @Test
+    @DisplayName("포인트 내역 조회 성공 테스트")
+    public void pointSelectHistoriesTest2(){
+        // given
+        final long id = 1L;
+
+        // 반환할 포인트 내역을 미리 정의
+        // id 1 인 유저 2개의 내역
+        List<PointHistory> pointHistories = Arrays.asList(
+            new PointHistory(1, id, 100, TransactionType.CHARGE, System.currentTimeMillis()),
+            new PointHistory(2, id, 100, TransactionType.USE, System.currentTimeMillis())
+        );
+
+        // stub
+        // 주어진 id로 조회 된 포인트 내역을 반환
+        when(pointHistoryTable.selectAllByUserId(id)).thenReturn(pointHistories);
+
+        // when
+        List<PointHistory> returnPointHistories = pointService.selectHistories(id);
+
+        // then
+        // stub 으로 설정한 포인트 내역 검증
+        assertEquals(returnPointHistories.size(), pointHistories.size());
+
+        verify(userPointTable, times(1)).selectById(id);
+        verify(pointHistoryTable, times(1)).selectAllByUserId(id);
+
+    }
 
 }

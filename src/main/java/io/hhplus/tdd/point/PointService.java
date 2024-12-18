@@ -62,7 +62,7 @@ public class PointService {
         return userPoint;
     }
 
-    public List<UserPoint> selectHistories(long id){
+    public List<PointHistory> selectHistories(long id){
 
         UserPoint userPoint = userPointTable.selectById(id);
 
