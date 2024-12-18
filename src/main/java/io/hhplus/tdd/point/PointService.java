@@ -1,6 +1,7 @@
 package io.hhplus.tdd.point;
 
 import io.hhplus.tdd.database.UserPointTable;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -59,6 +60,10 @@ public class PointService {
         }
 
         return userPoint;
+    }
+
+    public List<UserPoint> selectHistories(long id){
+        return null;
     }
 
 
