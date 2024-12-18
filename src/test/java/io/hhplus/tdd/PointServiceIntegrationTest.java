@@ -6,9 +6,14 @@ import static org.mockito.ArgumentMatchers.anyFloat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import io.hhplus.tdd.database.PointHistoryTable;
 import io.hhplus.tdd.database.UserPointTable;
+import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.PointService;
+import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
+import java.util.Arrays;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,6 +31,9 @@ public class PointServiceIntegrationTest {
 
     @Autowired
     private UserPointTable userPointTable;
+
+    @Autowired
+    private PointHistoryTable pointHistoryTable;
 
     @Test
     @DisplayName("포인트 충전 통합 테스트")
@@ -96,6 +104,30 @@ public class PointServiceIntegrationTest {
         // 조회한 유저에 대한 검증
         assertEquals(returnUser.point(), point);
         assertEquals(returnUser.id(), id);
+
+    }
+
+    @Test
+    @DisplayName("포인트 내역 조회 통합 테스트")
+    public void pointSelectHistoriesIntegrationTest(){
+        // given
+        final long id = 1L;
+        final long point = 500L;
+
+        // id 가 1이고 기존 point가 500인 유저를 입력
+        userPointTable.insertOrUpdate(id, point);
+
+        // 반환할 포인트 내역을 입력
+        // id 1 인 유저 2개의 내역
+        pointHistoryTable.insert(id, 100, TransactionType.CHARGE, System.currentTimeMillis());
+        pointHistoryTable.insert(id, 100, TransactionType.USE, System.currentTimeMillis());
+
+        // when
+        List<PointHistory> returnPointHistories = pointService.selectHistories(id);
+
+        // then
+        // 조회한 포인트 내역에 대한 검증
+        assertEquals(returnPointHistories.size(), 2);
 
     }
 
