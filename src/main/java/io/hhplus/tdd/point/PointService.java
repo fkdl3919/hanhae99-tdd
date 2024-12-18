@@ -63,6 +63,14 @@ public class PointService {
     }
 
     public List<UserPoint> selectHistories(long id){
+
+        UserPoint userPoint = userPointTable.selectById(id);
+
+        // 입력한 id의 유저가 존재하지 않을 시
+        if(userPoint == null) {
+            throw new IllegalArgumentException("입력한 유저가 존재하지 않습니다.");
+        }
+
         return null;
     }
 
