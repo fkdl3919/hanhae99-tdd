@@ -288,6 +288,9 @@ public class PointServiceIntegrationTest {
 
         // then
         assertEquals(expected.point(), (point * 5) - usePoint);
+
+        // A유저에 대한 요청이 모두 끝난 후 globalMap에 A의 id 값이 남아있는지 검증
+        assertNull(controlMap.getUserLock(id));
     }
 
 

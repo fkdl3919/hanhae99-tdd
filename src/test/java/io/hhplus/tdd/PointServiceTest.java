@@ -7,11 +7,13 @@ import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.PointService;
 import io.hhplus.tdd.point.TransactionType;
+import io.hhplus.tdd.point.UserLock;
 import io.hhplus.tdd.point.UserPoint;
 import io.hhplus.tdd.util.GlobalConcurrentControlMap;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.locks.ReentrantLock;
+import org.apache.catalina.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -40,7 +42,7 @@ public class PointServiceTest {
 
     @BeforeEach
     public void beforeEach() {
-        when(globalConcurrentControlMap.get(any())).thenReturn(new ReentrantLock(true));
+        when(globalConcurrentControlMap.get(any())).thenReturn(new UserLock(new ReentrantLock(true)));
     }
 
     /**

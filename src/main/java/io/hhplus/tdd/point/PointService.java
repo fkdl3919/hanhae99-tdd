@@ -17,11 +17,11 @@ public class PointService {
     private final PointHistoryTable pointHistoryTable;
     private final GlobalConcurrentControlMap globalConcurrentControlMap;
 
-    public UserPoint charge(long id, long amount){
+    public UserPoint charge(long id, long amount) {
 
-        ReentrantLock lock = globalConcurrentControlMap.get(id);
+        UserLock userLock = globalConcurrentControlMap.get(id);
 
-        GlobalConcurrentControlMap.tryLock(lock, 3);
+        GlobalConcurrentControlMap.tryLock(userLock, 3);
 
         try {
             UserPoint userPoint = userPointTable.selectById(id);
@@ -42,15 +42,17 @@ public class PointService {
             return userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point());
         }finally {
             System.out.println("충전 종료");
-            lock.unlock();
+            GlobalConcurrentControlMap.unLock(userLock);
+
+            globalConcurrentControlMap.removeIfUnused(id);
         }
     }
 
     public UserPoint use(long id, long amount){
 
-        ReentrantLock lock = globalConcurrentControlMap.get(id);
+        UserLock userLock = globalConcurrentControlMap.get(id);
 
-        GlobalConcurrentControlMap.tryLock(lock, 3);
+        GlobalConcurrentControlMap.tryLock(userLock, 3);
 
         try {
             UserPoint userPoint = userPointTable.selectById(id);
@@ -74,14 +76,16 @@ public class PointService {
             return userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point());
         }finally {
             System.out.println("사용 종료");
-            lock.unlock();
+            GlobalConcurrentControlMap.unLock(userLock);
+
+            globalConcurrentControlMap.removeIfUnused(id);
         }
     }
 
     public UserPoint selectPoint(long id){
-        ReentrantLock lock = globalConcurrentControlMap.get(id);
+        UserLock userLock = globalConcurrentControlMap.get(id);
 
-        GlobalConcurrentControlMap.tryLock(lock, 3);
+        GlobalConcurrentControlMap.tryLock(userLock, 3);
 
         try {
             UserPoint userPoint = userPointTable.selectById(id);
@@ -94,14 +98,16 @@ public class PointService {
             return userPoint;
         }finally {
             System.out.println("조회 종료");
-            lock.unlock();
+            GlobalConcurrentControlMap.unLock(userLock);
+
+            globalConcurrentControlMap.removeIfUnused(id);
         }
     }
 
     public List<PointHistory> selectHistories(long id){
-        ReentrantLock lock = globalConcurrentControlMap.get(id);
+        UserLock userLock = globalConcurrentControlMap.get(id);
 
-        GlobalConcurrentControlMap.tryLock(lock, 3);
+        GlobalConcurrentControlMap.tryLock(userLock, 3);
 
         try {
             UserPoint userPoint = userPointTable.selectById(id);
@@ -114,7 +120,9 @@ public class PointService {
             return pointHistoryTable.selectAllByUserId(userPoint.id());
         }finally {
             System.out.println("내역 조회 종료");
-            lock.unlock();
+            GlobalConcurrentControlMap.unLock(userLock);
+
+            globalConcurrentControlMap.removeIfUnused(id);
         }
     }
 
