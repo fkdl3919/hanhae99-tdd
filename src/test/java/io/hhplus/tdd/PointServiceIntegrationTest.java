@@ -239,5 +239,56 @@ public class PointServiceIntegrationTest {
 
     }
 
+    /**
+     * 동시성 테스트
+     * 시나리오 3.
+     * A 유저가 충전, 사용, 조회 를 동시에 요청했을 때 사용자는 순차적인 로직이 마무리 된 후 조회를 원할 경우
+     */
+    @Test
+    @DisplayName("포인트 service 동시성 테스트")
+    public void pointConcurrencyTest3() throws ExecutionException, InterruptedException {
+        // given
+        final long id = 1L;
+        final long point = 100L;
+
+        final long usePoint = 100L;
+
+        ExecutorService executorService = Executors.newFixedThreadPool(3);
+
+        Callable<UserPoint> charge = () -> pointService.charge(id, point);
+
+        Callable<UserPoint> use = () -> pointService.use(id, usePoint);
+
+        Callable<UserPoint> selectPoint = () -> pointService.selectPoint(id);
+
+        // when
+        // A 유저가 5번의 충전 시도
+        executorService.submit(charge);
+        executorService.submit(charge);
+        executorService.submit(charge);
+        executorService.submit(charge);
+        executorService.submit(charge);
+
+        // globalMap의 Lock 클래스가 null이 아닌지 체크
+        assertNotNull(controlMap.get(id));
+
+        // A 유저가 1번의 사용 시도
+        executorService.submit(use);
+
+        // A 유저가 1번의 조회 시도
+        Future<UserPoint> useSubmit = executorService.submit(selectPoint);
+
+        try {
+            executorService.shutdown();
+            executorService.awaitTermination(200, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        UserPoint expected = useSubmit.get();
+
+        // then
+        assertEquals(expected.point(), (point * 5) - usePoint);
+    }
+
 
 }
