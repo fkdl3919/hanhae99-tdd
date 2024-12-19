@@ -95,5 +95,60 @@ public class PointControllerTest {
 
     }
 
+    /**
+     * PATCH /point/{id}/use : 포인트를 사용한다.
+     * 예외상항 설정
+     * - pathVariable인 id가 유효한 값이 아닌 경우
+     * - amount값이 존재하지 않는 경우
+     */
+    @Test
+    @DisplayName("포인트 충전 e2e 통합 테스트")
+    public void pointUseE2ETest1() throws Exception {
+        String url = "/use";
+
+        // given
+        final long id = 1L;
+        final long point = 200L;
+
+        final long useAmount = 100L;
+
+        // 사용될 유저를 미리 입력
+        pointService.charge(id, point);
+
+        // when
+        // id가 유효한 값이 아닌 경우
+        mockMvc.perform(patch("/point/tt" + url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(useAmount)))
+
+            // then
+            .andExpect(status().isBadRequest());
+
+        // when
+        // useAmount값이 존재하지 않는 경우
+        mockMvc.perform(patch("/point/" + id + url)
+                .contentType(MediaType.APPLICATION_JSON))
+
+            // then
+            .andExpect(status().isBadRequest());
+
+
+        // when
+        // 포인트 사용이 성공한 경우 사용된 포인트의 잔고를 확인
+        MvcResult mvcResult = mockMvc.perform(patch("/point/" + id + url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsBytes(useAmount)))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        UserPoint userPoint = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), UserPoint.class);
+
+        // then
+        assertEquals(userPoint.point(), point - useAmount);
+        assertEquals(userPoint.id(), id);
+
+    }
+
+
 
 }
