@@ -28,6 +28,8 @@ public class PointService {
         // 입력받은 amount 조회된 user에게 입력
         UserPoint updatedUser = userPoint.addPoint(amount);
 
+        pointHistoryTable.insert(updatedUser.id(), amount, TransactionType.CHARGE, System.currentTimeMillis());
+
         return userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point());
     }
 
@@ -48,6 +50,8 @@ public class PointService {
 
         // 입력받은 amount 조회된 user에게 입력
         UserPoint updatedUser = userPoint.usePoint(amount);
+
+        pointHistoryTable.insert(updatedUser.id(), amount, TransactionType.USE, System.currentTimeMillis());
 
         return userPointTable.insertOrUpdate(updatedUser.id(), updatedUser.point());
     }
