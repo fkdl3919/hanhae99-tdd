@@ -8,9 +8,13 @@ import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.PointService;
 import io.hhplus.tdd.point.TransactionType;
 import io.hhplus.tdd.point.UserPoint;
+import io.hhplus.tdd.util.GlobalConcurrentControlMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.locks.ReentrantLock;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,6 +35,13 @@ public class PointServiceTest {
     @Mock
     private PointHistoryTable pointHistoryTable; // 테스트 대상의 의존성을 해결하기 위해, 예상된 결과를 반환하기 위하여 point table을 mock 으로 설정함
 
+    @Mock
+    private GlobalConcurrentControlMap globalConcurrentControlMap;
+
+    @BeforeEach
+    public void beforeEach() {
+        when(globalConcurrentControlMap.get(any())).thenReturn(new ReentrantLock(true));
+    }
 
     /**
      * PATCH  /point/{id}/charge : 포인트를 충전한다.
