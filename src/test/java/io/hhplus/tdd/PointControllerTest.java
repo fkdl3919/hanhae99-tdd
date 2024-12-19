@@ -132,7 +132,6 @@ public class PointControllerTest {
             // then
             .andExpect(status().isBadRequest());
 
-
         // when
         // 포인트 사용이 성공한 경우 사용된 포인트의 잔고를 확인
         MvcResult mvcResult = mockMvc.perform(patch("/point/" + id + url)
@@ -148,6 +147,45 @@ public class PointControllerTest {
         assertEquals(userPoint.id(), id);
 
     }
+
+    /**
+     * GET /point/{id} : 포인트를 조회한다.
+     * 예외상항 설정
+     * - pathVariable인 id가 유효한 값이 아닌 경우
+     */
+    @Test
+    @DisplayName("포인트 조회 e2e 통합 테스트")
+    public void pointSelectE2ETest1() throws Exception {
+
+        // given
+        final long id = 1L;
+        final long point = 200L;
+
+        // 사용될 유저를 미리 입력
+        pointService.charge(id, point);
+
+        // when
+        // id가 유효한 값이 아닌 경우
+        mockMvc.perform(get("/point/tt"))
+
+            // then
+            .andExpect(status().isBadRequest());
+
+
+        // when
+        // 포인트 사용이 성공한 경우 사용된 포인트의 잔고를 확인
+        MvcResult mvcResult = mockMvc.perform(get("/point/" + id ))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        UserPoint userPoint = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), UserPoint.class);
+
+        // then
+        assertEquals(userPoint.point(), point);
+        assertEquals(userPoint.id(), id);
+
+    }
+
 
 
 
