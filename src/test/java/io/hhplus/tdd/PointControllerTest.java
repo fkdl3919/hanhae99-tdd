@@ -4,12 +4,15 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.hhplus.tdd.database.UserPointTable;
 import io.hhplus.tdd.point.PointController;
+import io.hhplus.tdd.point.PointHistory;
 import io.hhplus.tdd.point.PointService;
 import io.hhplus.tdd.point.UserPoint;
 import java.awt.Point;
+import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -90,8 +93,8 @@ public class PointControllerTest {
         UserPoint userPoint = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), UserPoint.class);
 
         // then
-        assertEquals(userPoint.point(), amount);
-        assertEquals(userPoint.id(), id);
+        assertEquals(amount, userPoint.point());
+        assertEquals(id, userPoint.id());
 
     }
 
@@ -143,8 +146,8 @@ public class PointControllerTest {
         UserPoint userPoint = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), UserPoint.class);
 
         // then
-        assertEquals(userPoint.point(), point - useAmount);
-        assertEquals(userPoint.id(), id);
+        assertEquals( point - useAmount, userPoint.point());
+        assertEquals(id, userPoint.id());
 
     }
 
@@ -181,12 +184,48 @@ public class PointControllerTest {
         UserPoint userPoint = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), UserPoint.class);
 
         // then
-        assertEquals(userPoint.point(), point);
-        assertEquals(userPoint.id(), id);
+        assertEquals(point, userPoint.point());
+        assertEquals(id, userPoint.id());
 
     }
 
+    /**
+     * GET /point/{id}/histories : 포인트 내역을 조회한다.
+     * 예외상항 설정
+     * - pathVariable인 id가 유효한 값이 아닌 경우
+     */
+    @Test
+    @DisplayName("포인트 내역 조회 e2e 통합 테스트")
+    public void pointSelectHistoriesE2ETest1() throws Exception {
+        String url = "/histories";
 
+        // given
+        final long id = 1L;
+        final long point = 200L;
+
+        // 사용될 유저를 미리 입력
+        pointService.charge(id, point);
+        pointService.charge(id, point);
+
+        // when
+        // id가 유효한 값이 아닌 경우
+        mockMvc.perform(get("/point/tt" + url))
+            // then
+            .andExpect(status().isBadRequest());
+
+
+        // when
+        // 포인트 사용이 성공한 경우 사용된 포인트의 잔고를 확인
+        MvcResult mvcResult = mockMvc.perform(get("/point/" + id  + url ))
+            .andExpect(status().isOk())
+            .andReturn();
+
+        List<PointHistory> userPointHistories = objectMapper.readValue(mvcResult.getResponse().getContentAsString(), new TypeReference<List<PointHistory>>() {});
+
+        // then
+        assertEquals(2, userPointHistories.size());
+
+    }
 
 
 }
