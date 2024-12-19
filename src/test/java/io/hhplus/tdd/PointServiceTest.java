@@ -145,8 +145,8 @@ public class PointServiceTest {
 
         // then
         // stub 으로 설정한 A와 B의 id, point 값이 같은 지 확인
-        assertEquals(returnUser.id(), updatedUser.id());
-        assertEquals(returnUser.point(), updatedUser.point());
+        assertEquals(updatedUser.id(), returnUser.id());
+        assertEquals(updatedUser.point(), returnUser.point());
         verify(userPointTable, times(1)).selectById(id);
         verify(userPointTable, times(1)).insertOrUpdate(updatedUser.id(), updatedUser.point());
 
@@ -294,8 +294,8 @@ public class PointServiceTest {
 
         // then
         // stub 으로 설정한 A와 B의 id, point 값이 같은 지 확인
-        assertEquals(returnUser.id(), updatedUser.id());
-        assertEquals(returnUser.point(), updatedUser.point());
+        assertEquals(updatedUser.id(), returnUser.id());
+        assertEquals(updatedUser.point(), returnUser.point());
         verify(userPointTable, times(1)).selectById(id);
         verify(userPointTable, times(1)).insertOrUpdate(updatedUser.id(), updatedUser.point());
 
@@ -350,8 +350,8 @@ public class PointServiceTest {
 
         // then
         // stub 으로 설정한 A와 B의 id, point 값이 같은 지 확인
-        assertEquals(returnUser.id(), selectUser.id());
-        assertEquals(returnUser.point(), selectUser.point());
+        assertEquals(selectUser.id(), returnUser.id());
+        assertEquals(selectUser.point(), returnUser.point());
         verify(userPointTable, times(1)).selectById(id);
 
     }
@@ -416,7 +416,7 @@ public class PointServiceTest {
 
         // then
         // stub 으로 설정한 포인트 내역 검증
-        assertEquals(returnPointHistories.size(), pointHistories.size());
+        assertEquals(pointHistories.size(), returnPointHistories.size());
 
         verify(userPointTable, times(1)).selectById(id);
         verify(pointHistoryTable, times(1)).selectAllByUserId(id);
