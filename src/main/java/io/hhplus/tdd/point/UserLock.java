@@ -6,6 +6,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class UserLock {
 
     private ReentrantLock lock;
+
+    // 참조 카운트 관리
     private int counter;
 
     public UserLock(ReentrantLock lock) {
